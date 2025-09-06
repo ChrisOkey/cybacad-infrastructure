@@ -11,8 +11,15 @@ on:
 
 jobs:
   terraform:
-    name: Terraform Checks
+    name: Terraform Checks (dev)
     runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_env: dev   # Automatically sets var.env
+
+    defaults:
+      run:
+        working-directory: terraform/environments/dev  # Where your .tf files live
 
     steps:
       - name: Checkout
