@@ -1,0 +1,7 @@
+📝 Logging to: /c/Users/User/Chris/Projects/logs/dev_apply_2025-09-05_12-55-04.log
+🔍 Checking AWS CLI credentials...
+✅ AWS CLI is configured and credentials are valid.
+🔧 Bootstrapping remote state backend in us-east-1...
+📦 Creating S3 bucket: cybacad-tfstate-dev
+
+An error occurred (InvalidLocationConstraint) when calling the CreateBucket operation: The specified location-constraint is not valid

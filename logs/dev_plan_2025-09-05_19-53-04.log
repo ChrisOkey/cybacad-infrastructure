@@ -1,0 +1,71 @@
+🔍 Verbose mode ON — showing all commands
++ main
++ ensure_tools
++ for t in terraform aws
++ command -v terraform
++ for t in terraform aws
++ command -v aws
++ command -v zip
++ command -v powershell.exe
++ check_aws_credentials
++ echo '🔍 Checking AWS CLI credentials...'
+🔍 Checking AWS CLI credentials...
++ aws sts get-caller-identity --region us-east-1
++ echo '✅ AWS CLI is configured and credentials are valid.'
+✅ AWS CLI is configured and credentials are valid.
++ bootstrap_backend
++ echo '🔧 Bootstrapping remote state backend in us-east-1...'
+🔧 Bootstrapping remote state backend in us-east-1...
++ aws s3api head-bucket --bucket cybacad-tfstate-dev
++ echo '✅ S3 bucket exists.'
+✅ S3 bucket exists.
++ aws dynamodb describe-table --table-name cybacad-tflock-dev
++ echo '✅ DynamoDB table exists.'
+✅ DynamoDB table exists.
++ write_backend_tf
++ mkdir -p /c/Users/User/Chris/Projects/terraform/environments/dev
++ cat
++ ensure_tf_variables
++ local vars_file=/c/Users/User/Chris/Projects/terraform/environments/dev/variables.tf
++ mkdir -p /c/Users/User/Chris/Projects/terraform/environments/dev
++ '[' '!' -f /c/Users/User/Chris/Projects/terraform/environments/dev/variables.tf ']'
++ echo '🆕 Creating /c/Users/User/Chris/Projects/terraform/environments/dev/variables.tf'
+🆕 Creating /c/Users/User/Chris/Projects/terraform/environments/dev/variables.tf
++ cat
++ return
++ package_lambda
++ '[' '!' -d /c/Users/User/Chris/Projects/terraform/environments/dev/lambda ']'
++ echo '⚠️  No Lambda directory at /c/Users/User/Chris/Projects/terraform/environments/dev/lambda; skipping packaging.'
+⚠️  No Lambda directory at /c/Users/User/Chris/Projects/terraform/environments/dev/lambda; skipping packaging.
++ return
++ tf_init
++ echo '📂 Using Terraform dir: /c/Users/User/Chris/Projects/terraform/environments/dev'
+📂 Using Terraform dir: /c/Users/User/Chris/Projects/terraform/environments/dev
++ cd /c/Users/User/Chris/Projects/terraform/environments/dev
++ terraform fmt -recursive
++ terraform validate
+[32m[1mSuccess![0m The configuration is valid.
+[0m
++ terraform init -upgrade
+[0m[1mInitializing the backend...[0m
+[0m[1mInitializing provider plugins...[0m
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
++ case "$COMMAND" in
++ tf_plan
++ terraform plan -var=env=dev -var=aws_region=us-east-1 -out=tfplan
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
++ echo '✅ Script execution finished successfully. Logs are at /c/Users/User/Chris/Projects/logs/dev_plan_2025-09-05_19-53-04.log'
+✅ Script execution finished successfully. Logs are at /c/Users/User/Chris/Projects/logs/dev_plan_2025-09-05_19-53-04.log
