@@ -1,0 +1,27 @@
+🔍 Verbose mode ON — showing all commands
++ main
++ case "$COMMAND" in
++ echo '📝 Logging to: /c/Users/User/Chris/Projects/logs/dev_plan_2025-09-05_12-55-18.log'
+📝 Logging to: /c/Users/User/Chris/Projects/logs/dev_plan_2025-09-05_12-55-18.log
++ ensure_tools
++ for t in terraform aws
++ command -v terraform
++ for t in terraform aws
++ command -v aws
++ command -v zip
++ command -v powershell.exe
++ check_aws_credentials
++ echo '🔍 Checking AWS CLI credentials...'
+🔍 Checking AWS CLI credentials...
++ aws sts get-caller-identity --region us-east-1
++ echo '✅ AWS CLI is configured and credentials are valid.'
+✅ AWS CLI is configured and credentials are valid.
++ bootstrap_backend
++ echo '🔧 Bootstrapping remote state backend in us-east-1...'
+🔧 Bootstrapping remote state backend in us-east-1...
++ aws s3api head-bucket --bucket cybacad-tfstate-dev
++ echo '📦 Creating S3 bucket: cybacad-tfstate-dev'
+📦 Creating S3 bucket: cybacad-tfstate-dev
++ aws s3api create-bucket --bucket cybacad-tfstate-dev --region us-east-1 --create-bucket-configuration LocationConstraint=us-east-1
+
+An error occurred (InvalidLocationConstraint) when calling the CreateBucket operation: The specified location-constraint is not valid

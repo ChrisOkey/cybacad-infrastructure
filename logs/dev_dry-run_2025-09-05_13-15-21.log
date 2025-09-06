@@ -1,0 +1,73 @@
+📝 Logging to: /c/Users/User/Chris/Projects/logs/dev_dry-run_2025-09-05_13-15-21.log
+🔍 Checking AWS CLI credentials...
+✅ AWS CLI is configured and credentials are valid.
+🔧 Bootstrapping remote state backend in us-east-1...
+✅ S3 bucket exists.
+🗄 Creating DynamoDB table: cybacad-tflock-dev
+{
+    "TableDescription": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "LockID",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "cybacad-tflock-dev",
+        "KeySchema": [
+            {
+                "AttributeName": "LockID",
+                "KeyType": "HASH"
+            }
+        ],
+        "TableStatus": "CREATING",
+        "CreationDateTime": "2025-09-05T13:15:29.201000+01:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 0,
+            "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:us-east-1:016592542442:table/cybacad-tflock-dev",
+        "TableId": "6b32d8bb-ad43-45cb-90d7-85c0dd3e7ea2",
+        "BillingModeSummary": {
+            "BillingMode": "PAY_PER_REQUEST"
+        },
+        "DeletionProtectionEnabled": false
+    }
+}
+⏳ Waiting for DynamoDB table...
+⚠️  No Lambda directory at /c/Users/User/Chris/Projects/terraform/environments/dev/lambda; skipping packaging.
+📂 Using Terraform dir: /c/Users/User/Chris/Projects/terraform/environments/dev
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+[0m[1mInitializing the backend...[0m
+[0m[32m
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.[0m
+[0m[1mInitializing provider plugins...[0m
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+🧪 Running DRY-RUN mode — no changes will be applied.
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mValue for undeclared variable[0m
+[31m│[0m [0m
+[31m│[0m [0m[0mA variable named "env" was assigned on the command line, but the root
+[31m│[0m [0mmodule does not declare a variable of that name. To use this value, add a
+[31m│[0m [0m"variable" block to the configuration.
+[31m╵[0m[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mValue for undeclared variable[0m
+[31m│[0m [0m
+[31m│[0m [0m[0mA variable named "aws_region" was assigned on the command line, but the
+[31m│[0m [0mroot module does not declare a variable of that name. To use this value,
+[31m│[0m [0madd a "variable" block to the configuration.
+[31m╵[0m[0m

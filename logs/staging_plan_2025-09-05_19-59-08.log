@@ -1,0 +1,66 @@
+🔍 Checking AWS CLI credentials...
+✅ AWS CLI is configured and credentials are valid.
+🔧 Bootstrapping remote state backend in us-east-1...
+📦 Creating S3 bucket: cybacad-tfstate-staging
+{
+    "Location": "/cybacad-tfstate-staging"
+}
+🗄 Creating DynamoDB table: cybacad-tflock-staging
+{
+    "TableDescription": {
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "LockID",
+                "AttributeType": "S"
+            }
+        ],
+        "TableName": "cybacad-tflock-staging",
+        "KeySchema": [
+            {
+                "AttributeName": "LockID",
+                "KeyType": "HASH"
+            }
+        ],
+        "TableStatus": "CREATING",
+        "CreationDateTime": "2025-09-05T19:59:24.205000+01:00",
+        "ProvisionedThroughput": {
+            "NumberOfDecreasesToday": 0,
+            "ReadCapacityUnits": 0,
+            "WriteCapacityUnits": 0
+        },
+        "TableSizeBytes": 0,
+        "ItemCount": 0,
+        "TableArn": "arn:aws:dynamodb:us-east-1:016592542442:table/cybacad-tflock-staging",
+        "TableId": "6e3611f0-716a-4617-a3d1-5e7037e4f714",
+        "BillingModeSummary": {
+            "BillingMode": "PAY_PER_REQUEST"
+        },
+        "DeletionProtectionEnabled": false
+    }
+}
+🆕 Creating /c/Users/User/Chris/Projects/terraform/environments/staging/variables.tf
+⚠️  No Lambda directory at /c/Users/User/Chris/Projects/terraform/environments/staging/lambda; skipping packaging.
+📂 Using Terraform dir: /c/Users/User/Chris/Projects/terraform/environments/staging
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+[0m[1mInitializing the backend...[0m
+[0m[32m
+Successfully configured the backend "s3"! Terraform will automatically
+use this backend unless the backend configuration changes.[0m
+[0m[1mInitializing provider plugins...[0m
+
+[0m[1m[32mTerraform has been successfully initialized![0m[32m[0m
+[0m[32m
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.[0m
+
+[0m[1m[32mNo changes.[0m[1m Your infrastructure matches the configuration.[0m
+
+[0mTerraform has compared your real infrastructure against your configuration
+and found no differences, so no changes are needed.
+✅ Script execution finished successfully. Logs are at /c/Users/User/Chris/Projects/logs/staging_plan_2025-09-05_19-59-08.log
