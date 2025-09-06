@@ -1,0 +1,55 @@
+name: Terraform CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  terraform:
+    name: Terraform Checks (dev)
+    runs-on: ubuntu-latest
+
+    env:
+      TF_VAR_env: dev
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: us-east-1
+
+    defaults:
+      run:
+        working-directory: terraform/environments/dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify AWS credentials are set
+        run: |
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "❌ AWS credentials are missing. Please set AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in GitHub Secrets."
+            exit 1
+          else
+            echo "✅ AWS credentials detected."
+          fi
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.6
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Init (migrate state)
+        run: terraform init -migrate-state
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -input=false
