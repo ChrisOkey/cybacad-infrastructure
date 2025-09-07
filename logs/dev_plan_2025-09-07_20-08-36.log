@@ -1,0 +1,22 @@
+🔍 Checking AWS CLI credentials...
+✅ AWS CLI is configured and credentials are valid.
+🔧 Bootstrapping remote state backend in us-east-1...
+✅ S3 bucket exists.
+✅ DynamoDB table exists.
+⚠️  No Lambda directory at /c/Users/User/Chris/Projects/cybacad-infrastructure/terraform/environments/dev/lambda; skipping packaging.
+📂 Using Terraform dir: /c/Users/User/Chris/Projects/cybacad-infrastructure/terraform/environments/dev
+backend.tf
+[32m[1mSuccess![0m The configuration is valid.
+[0m
+[0m[1mInitializing the backend...[0m
+[31m╷[0m[0m
+[31m│[0m [0m[1m[31mError: [0m[0m[1mBackend configuration changed[0m
+[31m│[0m [0m
+[31m│[0m [0m[0mA change in the backend configuration has been detected, which may require
+[31m│[0m [0mmigrating existing state.
+[31m│[0m [0m
+[31m│[0m [0mIf you wish to attempt automatic migration of the state, use "terraform
+[31m│[0m [0minit -migrate-state".
+[31m│[0m [0mIf you wish to store the current configuration with no changes to the
+[31m│[0m [0mstate, use "terraform init -reconfigure".
+[31m╵[0m[0m
