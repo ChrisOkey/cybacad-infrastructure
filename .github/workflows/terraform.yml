@@ -1,8 +1,10 @@
+name: Terraform Deployment
+
 on:
   push:
     branches:
       - main
-  pull_request:
+  workflow_dispatch:
 
 jobs:
   terraform:
@@ -28,9 +30,7 @@ jobs:
           terraform_version: 1.9.8
 
       - name: Terraform Init
-        run: ./tf.sh ${{ matrix.environment }} init
+        run: ./infrastructure.sh init ${{ matrix.environment }}
 
       - name: Terraform Plan
-        run: ./tf.sh ${{ matrix.environment }} plan
-
- 
+        run: ./infrastructure.sh plan ${{ matrix.environment }}
