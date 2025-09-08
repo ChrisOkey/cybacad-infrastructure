@@ -5,7 +5,7 @@ on:
     branches:
       - main
   pull_request:
-  workflow_dispatch:  # allows manual runs from the Actions tab
+  workflow_dispatch:
 
 jobs:
   terraform:
@@ -13,13 +13,12 @@ jobs:
 
     strategy:
       matrix:
-        environment: [dev, staging]  # add prod here if needed
+        environment: [dev, staging]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1️⃣ Configure AWS credentials for backend + provider
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -27,7 +26,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # 2️⃣ Diagnostic step to confirm credentials are loaded
       - name: Check AWS credentials are loaded
         run: |
           if [ -n "$AWS_ACCESS_KEY_ID" ]; then
@@ -43,21 +41,26 @@ jobs:
             exit 1
           fi
 
-      # 3️⃣ Set up Terraform (v1.10.5 supports use_lockfile)
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.10.5
 
-      # 4️⃣ Terraform Init (will now have AWS creds for S3 backend)
+      # 🔍 Debug step to see what CI is checking
+      - name: Debug Terraform files before fmt check
+        run: |
+          echo "Listing all Terraform files in workspace:"
+          find . -name "*.tf"
+          echo ""
+          echo "Running terraform fmt -diff -recursive to show changes (if any):"
+          terraform fmt -diff -recursive || true
+
+      # This is the step that currently fails in CI
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
       - name: Terraform Init
         run: ./tf.sh ${{ matrix.environment }} init
 
-      # 5️⃣ Terraform Plan
       - name: Terraform Plan
         run: ./tf.sh ${{ matrix.environment }} plan
-
-      # Optional: Auto-apply on main
-      # - name: Terraform Apply
-      #   if: github.ref == 'refs/heads/main'
-      #   run: ./tf.sh ${{ matrix.environment }} apply -auto-approve
