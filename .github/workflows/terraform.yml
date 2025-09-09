@@ -1,17 +1,33 @@
-name: Terraform Workflow
+name: Terraform
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+      command:
+        description: 'Terraform command'
+        required: true
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     steps:
-      - name: Check AWS credentials
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Run Terraform
         run: |
-          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+          if [ -z "${{ secrets.AWS_ACCESS_KEY_ID }}" ] || [ -z "${{ secrets.AWS_SECRET_ACCESS_KEY }}" ]; then
             echo "❌ AWS credentials not set in environment."
             exit 1
           fi
+          terraform -chdir="terraform/environments/${{ github.event.inputs.environment }}" "${{ github.event.inputs.command }}"
