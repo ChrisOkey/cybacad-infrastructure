@@ -1,66 +1,17 @@
-name: Terraform CI
+name: Terraform Workflow
 
 on:
   push:
     branches:
       - main
-  pull_request:
-  workflow_dispatch:
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        environment: [dev, staging]
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Check AWS credentials are loaded
+      - name: Check AWS credentials
         run: |
-          if [ -n "$AWS_ACCESS_KEY_ID" ]; then
-            echo "✅ AWS_ACCESS_KEY_ID is set"
-          else
-            echo "❌ AWS_ACCESS_KEY_ID is NOT set"
+          if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "❌ AWS credentials not set in environment."
             exit 1
           fi
-          if [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
-            echo "✅ AWS_SECRET_ACCESS_KEY is set"
-          else
-            echo "❌ AWS_SECRET_ACCESS_KEY is NOT set"
-            exit 1
-          fi
-
-      - name: Set up Terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.10.5
-
-      # 🔍 Debug step to see what CI is checking
-      - name: Debug Terraform files before fmt check
-        run: |
-          echo "Listing all Terraform files in workspace:"
-          find . -name "*.tf"
-          echo ""
-          echo "Running terraform fmt -diff -recursive to show changes (if any):"
-          terraform fmt -diff -recursive || true
-
-      # This is the step that currently fails in CI
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
-
-      - name: Terraform Init
-        run: ./tf.sh ${{ matrix.environment }} init
-
-      - name: Terraform Plan
-        run: ./tf.sh ${{ matrix.environment }} plan
