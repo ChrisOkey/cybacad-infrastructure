@@ -1,28 +1,60 @@
+name: Terraform (Hybrid OIDC)
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment name (default: dev)'
+        required: false
+        default: dev
+
 jobs:
   terraform:
+    name: Terraform Checks & Plan
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [dev, staging]
+    permissions:
+      id-token: write    # Required for OIDC
+      contents: read     # Required for actions/checkout
+
+    env:
+      TF_VAR_env: ${{ github.event.inputs.environment || 'dev' }}
+
+    defaults:
+      run:
+        working-directory: terraform/environments/${{ github.event.inputs.environment || 'dev' }}
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/terraform-ci-oidc
           aws-region: us-east-1
 
-      - name: Set up Terraform
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.8
+          terraform_version: 1.9.5
+
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
 
       - name: Terraform Init
-        run: ./tf.sh ${{ matrix.environment }} init
+        run: terraform init -migrate-state
+
+      - name: Terraform Validate
+        run: terraform validate
 
       - name: Terraform Plan
-        run: ./tf.sh ${{ matrix.environment }} plan
+        run: terraform plan -input=false
