@@ -1,28 +1,51 @@
-name: Deploy to AWS
+name: Deploy to AWS with Terraform
 
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      env:
+        description: "Environment to deploy (dev, staging, prod)"
+        required: true
+        default: dev
 
 permissions:
   id-token: write   # Required for OIDC
   contents: read    # Required for actions/checkout
 
 jobs:
-  deploy:
+  terraform:
     runs-on: ubuntu-latest
+    env:
+      TF_VAR_env: ${{ github.event.inputs.env || 'dev' }}
+      AWS_REGION: us-east-1
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
+      - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::016592542442:role/terraform-ci
-          aws-region: us-east-1
+          aws-region: ${{ env.AWS_REGION }}
 
-      - name: Terraform Init
-        run: terraform init
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: Terraform Init (migrate state)
+        working-directory: terraform/environments/${{ env.TF_VAR_env }}
+        run: terraform init -migrate-state
 
       - name: Terraform Plan
+        working-directory: terraform/environments/${{ env.TF_VAR_env }}
         run: terraform plan
+
+      # Optional: Apply automatically on push to main
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        working-directory: terraform/environments/${{ env.TF_VAR_env }}
+        run: terraform apply -auto-approve
