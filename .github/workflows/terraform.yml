@@ -42,19 +42,3 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan
-```
-eof
-
-### Step 3: Commit and Push the New File
-
-Once you have saved the file, you'll need to go back to your repository's root directory and run these commands to get it onto GitHub.
-
-```bash
-# Stage the newly created file for commit.
-git add .
-
-# Commit the new file with a clear message.
-git commit -m "Add final, corrected terraform workflow file"
-
-# Push to GitHub to trigger the workflow.
-git push
