@@ -1,0 +1,34 @@
+name: Terraform CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::016592542442:role/CybAcadGitHubActionsRole
+          aws-region: us-east-1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.8
+
+      - name: Terraform Init
+        run: terraform init -backend-config="bucket=cybacad-tfstate-dev" -backend-config="key=state/dev/terraform.tfstate" -backend-config="region=us-east-1"
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
