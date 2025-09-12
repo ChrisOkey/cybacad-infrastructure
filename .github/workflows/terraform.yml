@@ -1,40 +1,45 @@
-name: Terraform
+name: Terraform CI
+
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment name (e.g., dev, staging, prod)'
-        required: true
-      command:
-        description: 'Terraform command (init, plan, apply, destroy)'
-        required: true
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write    # Required for OIDC
-      contents: read     # Required for actions/checkout
+      id-token: write   # Required for GitHub OIDC
+      contents: read    # Required for actions/checkout
 
     steps:
+      # 1. Check out your repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials via OIDC
+      # 2. Configure AWS credentials via OIDC
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/terraform-ci-oidc
+          role-to-assume: arn:aws:iam::016592542442:role/CybAcadGitHubActionsRole
           aws-region: us-east-1
+          audience: sts.amazonaws.com
 
+      # 3. (Optional) Verify AWS identity
       - name: Verify AWS identity
         run: aws sts get-caller-identity
 
-      - name: Set up Terraform
+      # 4. Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.9.5   # or your preferred version
+          terraform_version: 1.9.8 # or your required version
 
-      - name: Run Terraform
-        run: |
-          terraform -chdir="terraform/environments/${{ github.event.inputs.environment }}" \
-            ${{ github.event.inputs.command }}
+      # 5. Terraform Init
+      - name: Terraform Init
+        run: terraform init -migrate-state
+
+      # 6. Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan
