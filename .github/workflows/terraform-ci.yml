@@ -1,17 +1,26 @@
-name: Terraform CI
+name: Terraform Deployment
 
 on:
-  pull_request:
+  push:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment'
+        required: true
+        default: 'dev'
+      command:
+        description: 'Terraform command'
+        required: true
+        default: 'plan'
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for GitHub OIDC
-      contents: read   # Required for actions/checkout
-
+      id-token: write
+      contents: read
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -19,12 +28,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::016592542442:role/terraform-ci
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-          audience: sts.amazonaws.com
-
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
 
       - name: Set up Terraform
         uses: hashicorp/setup-terraform@v3
@@ -32,9 +38,7 @@ jobs:
           terraform_version: 1.9.8
 
       - name: Terraform Init
-        run: terraform -chdir="terraform/environments/dev" init -reconfigure
+        run: terraform init -reconfigure
 
       - name: Terraform Plan
-        run: terraform -chdir="terraform/environments/dev" plan -input=false
-
-
+        run: terraform plan -input=false
