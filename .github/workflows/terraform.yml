@@ -33,6 +33,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # Optional: Debug OIDC token to verify sub/aud claims
+      # Remove this step once trust policy is confirmed working
+      - name: Debug OIDC token claims
+        run: |
+          echo "Requesting OIDC token..."
+          ID_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | jq -r '.value')
+          echo "Decoded OIDC token claims:"
+          echo "$ID_TOKEN" | cut -d "." -f2 | base64 -d | jq
+        env:
+          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTIONS_ID_TOKEN_REQUEST_URL: https://token.actions.githubusercontent.com/.well-known/openid-configuration
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
