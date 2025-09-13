@@ -1,17 +1,16 @@
-name: Terraform CI
+name: Terraform CD
 
 on:
-  pull_request:
+  push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write  # Required for OIDC
-      contents: read   # Required for actions/checkout
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout repository
@@ -23,16 +22,13 @@ jobs:
           role-to-assume: arn:aws:iam::016592542442:role/CybAcadGitHubActionsRole
           aws-region: us-east-1
 
-      - name: Verify AWS identity
-        run: aws sts get-caller-identity
-
-      - name: Set up Terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.9.8
 
       - name: Terraform Init
-        run: terraform init -reconfigure
+        run: terraform -chdir="terraform/environments/dev" init -reconfigure
 
-      - name: Terraform Plan
-        run: terraform plan -input=false
+      - name: Terraform Apply
+        run: terraform -chdir="terraform/environments/dev" apply -auto-approve
