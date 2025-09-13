@@ -1,0 +1,22 @@
+{
+  "name": "cybuni-tools",
+  "version": "1.0.0",
+  "description": "Backend tooling for CybAcad",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test:firebase": "tsx src/backend-tools/testFirebase.ts",
+    "seed:all": "tsx src/seeders/seedAll.ts"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "firebase": "^11.10.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3"
+  },
+  "keywords": [],
+  "author": "Christopher",
+  "license": "ISC"
+}
