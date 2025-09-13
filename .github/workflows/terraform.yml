@@ -30,13 +30,13 @@ jobs:
         working-directory: terraform/environments/${{ github.event.inputs.environment || 'dev' }}
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::016592542442:role/terraform-ci
+          role-to-assume: arn:aws:iam::016592542442:role/CybAcadGitHubActionsRole
           aws-region: us-east-1
           audience: sts.amazonaws.com
 
@@ -57,7 +57,6 @@ jobs:
       - name: Terraform Plan
         run: terraform plan -input=false
 
-      # Optional: Auto-apply only on workflow_dispatch
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve -input=false
