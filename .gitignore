@@ -1,3 +1,4 @@
 # Local environment variables
 .env
 node_modules
+apps/backend-nodejs/firebase-admin-key.json
