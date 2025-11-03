@@ -1,4 +1,4 @@
-name: Terraform CI/CD
+name: Terraform CI
 
 on:
   workflow_dispatch:
@@ -10,16 +10,12 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 jobs:
   terraform:
-    name: Terraform (${{ github.event.inputs.environment || 'dev' }})
     runs-on: ubuntu-latest
     permissions:
-      id-token: write   # Required for OIDC
+      id-token: write
       contents: read
 
     env:
@@ -33,20 +29,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 🔍 Step 1: Debug OIDC token claims (optional but useful for troubleshooting)
-      - name: Debug OIDC token claims
-        run: |
-          echo "Requesting OIDC token from GitHub..."
-          ID_TOKEN=$(curl -s -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com" | jq -r '.value')
-
-          echo "Decoded OIDC token claims:"
-          echo "$ID_TOKEN" | cut -d "." -f2 | base64 -d | jq
-        env:
-          ACTIONS_ID_TOKEN_REQUEST_TOKEN: ${{ env.ACTIONS_ID_TOKEN_REQUEST_TOKEN }}
-          ACTIONS_ID_TOKEN_REQUEST_URL: ${{ env.ACTIONS_ID_TOKEN_REQUEST_URL }}
-
-      # 🔑 Step 2: Configure AWS credentials for terraform-ci role
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -54,17 +36,18 @@ jobs:
           aws-region: us-east-1
           audience: sts.amazonaws.com
 
-      # ⚙️ Step 3: Setup Terraform
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.6
 
-      # ✅ Step 4: Terraform commands
       - name: Terraform Format
         run: terraform fmt -check -recursive
 
-      - name: Terraform Init (migrate state)
+      - name: Terraform Init
         run: terraform init -migrate-state
 
       - name: Terraform Validate
@@ -76,6 +59,5 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve -input=false
-
 
 

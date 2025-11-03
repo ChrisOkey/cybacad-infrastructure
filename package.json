@@ -1,0 +1,21 @@
+{
+  "name": "cybacad-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "pnpm build:frontend && pnpm build:backend",
+    "build:frontend": "pnpm --filter cybacad-frontend build",
+    "build:backend": "pnpm --filter backend-nodejs build",
+    "dev": "echo 'Use dev:frontend or dev:backend instead'",
+    "dev:frontend": "pnpm --filter cybacad-frontend dev",
+    "dev:backend": "pnpm --filter backend-nodejs dev",
+    "lint": "pnpm --filter cybacad-frontend lint"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,11 +1,16 @@
 {
+  // CRITICAL FIX: Extends the base monorepo configuration
+  "extends": "../../tsconfig.base.json", 
   "compilerOptions": {
-    "target": "ES2020",
-    "module": "ESNext",
-    "moduleResolution": "Node",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+    // These settings override or ensure Node.js compatibility
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    
+    // Set output and source directories specific to this application
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
-  "include": ["../src/**/*"]
+  "include": ["src/**/*"]
 }
+
+
