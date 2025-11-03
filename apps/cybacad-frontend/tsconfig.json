@@ -1,0 +1,9 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "noEmit": true
+  },
+  "include": ["app/**/*", "components/**/*", "lib/**/*", "../../packages/shared-types/**/*"],
+  "exclude": ["node_modules"]
+}
