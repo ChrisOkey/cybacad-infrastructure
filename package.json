@@ -2,6 +2,8 @@
   "name": "cybacad-monorepo",
   "private": true,
   "version": "1.0.0",
+  "packageManager": "pnpm@10.17.0",
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -13,9 +15,21 @@
     "dev": "echo 'Use dev:frontend or dev:backend instead'",
     "dev:frontend": "pnpm --filter cybacad-frontend dev",
     "dev:backend": "pnpm --filter backend-nodejs dev",
-    "lint": "pnpm --filter cybacad-frontend lint"
+    "lint": "pnpm --filter cybacad-frontend lint",
+    "build:shared-types": "pnpm --filter shared-types run build",
+    "typecheck:shared-types": "pnpm --filter shared-types run typecheck",
+    "generate:openapi": "tsx scripts/generate-openapi.ts",
+    "dev:openapi": "pnpm run typecheck:shared-types && pnpm run build:shared-types && pnpm run generate:openapi",
+    "watch:openapi": "nodemon --watch packages/shared-types/src --exec \"pnpm run dev:openapi\""
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.1.0",
+    "tsx": "^4.20.6",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
-    "typescript": "^5.9.2"
+    "nodemon": "^3.0.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.2.2"
   }
 }

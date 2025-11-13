@@ -1,8 +1,10 @@
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
 
 const MAX_RETRIES = 3;
 // Explicitly pass the API key, ensuring it uses the value loaded by dotenv.
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }); 
+const ai = new GoogleGenerativeAI({ apiKey: process.env.GEMINI_API_KEY });
+ 
 
 /**
  * Constructs a detailed, contextual prompt for the AI Coach.
