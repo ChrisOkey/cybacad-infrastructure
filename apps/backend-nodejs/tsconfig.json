@@ -1,16 +1,15 @@
 {
-  // CRITICAL FIX: Extends the base monorepo configuration
-  "extends": "../../tsconfig.base.json", 
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    // These settings override or ensure Node.js compatibility
+    // These settings are necessary overrides for Node.js API development:
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    
-    // Set output and source directories specific to this application
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+
+    // CRITICAL FIX: REMOVE baseUrl and paths entirely. 
+    // They are inherited from tsconfig.base.json.
+    "baseUrl": ".", // Retaining this is standard practice
   },
   "include": ["src/**/*"]
 }
-
-

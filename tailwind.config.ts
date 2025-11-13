@@ -1,13 +1,32 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
-  // This content path is now correct for a root-level config file
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  darkMode: "class", // ✅ Enables dark mode via class toggling
   content: [
-    "./apps/cybacad-frontend/src/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/**/*.{ts,tsx}", // ✅ Includes all TS/TSX files in src
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ["var(--font-poppins)", "var(--font-inter)", "sans-serif"],
+      },
+      colors: {
+        primary: {
+          DEFAULT: "#2563eb", // Tailwind blue-600
+          dark: "#1e40af",    // Tailwind blue-800
+        },
+        accent: {
+          DEFAULT: "#f59e0b", // Tailwind amber-500
+        },
+      },
+      boxShadow: {
+        card: "0 4px 12px rgba(0, 0, 0, 0.05)",
+      },
+    },
   },
-  plugins: [],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/aspect-ratio"),
+  ],
 };
-export default config;
+
