@@ -1,0 +1,39 @@
+{
+  "name": "@cybacad/shared-types",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./zod": {
+      "import": "./dist/zod/index.js",
+      "types": "./dist/zod/index.d.ts"
+    },
+    "./zod/course": {
+      "import": "./dist/zod/course.js",
+      "types": "./dist/zod/course.d.ts"
+    },
+    "./zod/module": {
+      "import": "./dist/zod/module.js",
+      "types": "./dist/zod/module.d.ts"
+    },
+    "./zod/lesson": {
+      "import": "./dist/zod/lesson.js",
+      "types": "./dist/zod/lesson.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  },
+  "license": "MIT"
+}
