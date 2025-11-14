@@ -9,16 +9,19 @@
     "packages/*"
   ],
   "scripts": {
-    "build": "pnpm build:frontend && pnpm build:backend",
-    "build:frontend": "pnpm --filter cybacad-frontend build",
-    "build:backend": "pnpm --filter backend-nodejs build",
     "dev": "echo 'Use dev:frontend or dev:backend instead'",
-    "dev:frontend": "pnpm --filter cybacad-frontend dev",
-    "dev:backend": "pnpm --filter backend-nodejs dev",
-    "lint": "pnpm --filter cybacad-frontend lint",
+    "dev:backend": "pnpm --filter cybacad-backend-api dev",
+    "dev:frontend": "pnpm --filter cybacad-frontend-web dev",
+    "build": "pnpm build:frontend && pnpm build:backend",
+    "build:frontend": "pnpm --filter cybacad-frontend-web build",
+    "build:backend": "pnpm --filter cybacad-backend-api build",
+    "lint": "pnpm --filter cybacad-frontend-web lint",
     "build:shared-types": "pnpm --filter shared-types run build",
     "typecheck:shared-types": "pnpm --filter shared-types run typecheck",
-    "generate:openapi": "tsx scripts/generate-openapi.ts",
+    
+    
+    "generate:openapi": "pnpm exec tsx generate-openapi.ts", 
+    
     "dev:openapi": "pnpm run typecheck:shared-types && pnpm run build:shared-types && pnpm run generate:openapi",
     "watch:openapi": "nodemon --watch packages/shared-types/src --exec \"pnpm run dev:openapi\""
   },

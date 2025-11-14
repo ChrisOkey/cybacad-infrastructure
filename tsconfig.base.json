@@ -1,18 +1,32 @@
 {
-  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "composite": true,
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "outDir": "dist",
-    "rootDir": ".",
+    // Module system and resolution
     "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "target": "ES2022",
+    "moduleResolution": "bundler",
+    "target": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+
+    // Strictness and safety
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "baseUrl": "."
-  },
-  "include": ["zod", "src", "index.ts"],
-  "exclude": ["dist", "node_modules"]
+
+    // Output and structure
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "rootDir": "src",
+
+    // ESM compatibility
+    "moduleDetection": "force",
+    "allowImportingTsExtensions": true
+  }
 }

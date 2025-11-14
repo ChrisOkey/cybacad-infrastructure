@@ -9,9 +9,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Import Zod schemas using path aliases
-import { CourseSchema } from "@shared-types/zod/index.js";
-import { ModuleSchema } from "@shared-types/zod/index.js";
-import { LessonSchema } from "@shared-types/zod/index.js";
+import { CourseSchema } from "@cybacad/shared-types/zod";
+import { ModuleSchema } from "@cybacad/shared-types/zod";
+import { LessonSchema } from "@cybacad/shared-types/zod";
 
 // Register schemas
 const registry = new OpenAPIRegistry();
