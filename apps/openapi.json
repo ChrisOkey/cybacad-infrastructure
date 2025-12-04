@@ -1,0 +1,127 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cybacad API",
+    "version": "1.0.0"
+  },
+  "components": {
+    "schemas": {
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "course_001"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Mastering Firestore"
+          },
+          "description": {
+            "type": "string",
+            "example": "A complete guide to building apps with Firestore."
+          },
+          "category": {
+            "type": "string",
+            "example": "Backend"
+          },
+          "isPublished": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "category",
+          "isPublished"
+        ]
+      },
+      "Module": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "module_001"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "course_001"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Firestore Fundamentals"
+          },
+          "description": {
+            "type": "string",
+            "example": "Learn how Firestore stores and retrieves data."
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+          "isPublished": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "courseId",
+          "title",
+          "order",
+          "isPublished"
+        ]
+      },
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "lesson_001"
+          },
+          "moduleId": {
+            "type": "string",
+            "format": "uuid",
+            "example": "module_001"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "example": "Understanding Firestore Queries"
+          },
+          "content": {
+            "type": "string",
+            "example": "This lesson covers compound queries and indexing in Firestore."
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 1
+          },
+          "isPublished": {
+            "type": "boolean",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "moduleId",
+          "title",
+          "content",
+          "order",
+          "isPublished"
+        ]
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {}
+}

@@ -1,0 +1,17 @@
+{
+  "name": "@cybacad/backend-nodejs",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "dependencies": {
+    "@aws-sdk/client-secrets-manager": "3.940.0",
+    "@cybacad/shared-types": "workspace:*",
+    "firebase-admin": "^12.5.0"
+  },
+  "devDependencies": {
+    "tsx": "4.20.6"
+  }
+}

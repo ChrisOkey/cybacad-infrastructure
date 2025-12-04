@@ -1,0 +1,25 @@
+{
+  "scripts": {
+    "build": "tsc -b",
+    "build:ui": "pnpm --filter @cybacad/ui run build",
+    "build:frontend": "pnpm --filter cybacad-frontend run build",
+    "build:backend": "pnpm --filter backend-nodejs run build",
+    "clean": "pnpm install --no-frozen-lockfile && pnpm exec rimraf \"**/node_modules\" \"**/dist\""
+  },
+  "packageManager": "pnpm@10.17.0+sha512.fce8a3dd29a4ed2ec566fb53efbb04d8c44a0f05bc6f24a73046910fb9c3ce7afa35a0980500668fa3573345bd644644fa98338fa168235c80f4aa17aa17fbef",
+  "devDependencies": {
+    "@tailwindcss/postcss": "4.1.17",
+    "@types/react": "^18.3.26",
+    "@types/react-dom": "19.2.3",
+    "autoprefixer": "10.4.22",
+    "next": "^13.5.11",
+    "postcss": "8.5.6",
+    "tailwindcss": "4.1.17",
+    "tsx": "4.20.6"
+  },
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.1.0",
+    "@codesandbox/sandpack-react": "2.20.0",
+    "zod": "4.1.12"
+  }
+}

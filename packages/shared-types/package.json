@@ -1,0 +1,24 @@
+{
+  "name": "@cybacad/shared-types",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -b"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./zod": {
+      "import": "./dist/zod/index.js",
+      "types": "./dist/zod/index.d.ts"
+    }
+  },
+  "private": true,
+  "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.1.0",
+    "zod": "4.1.12"
+  }
+}

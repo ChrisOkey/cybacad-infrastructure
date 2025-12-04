@@ -1,0 +1,55 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ✅ Helper function to check ownership
+    function isOwner(userId) {
+      return request.auth != null && request.auth.uid == userId;
+    }
+
+    // --- Courses collection ---
+    match /courses/{courseId} {
+      // 🔓 PUBLIC READ: Allows the dashboard to load even if the user isn't logged in yet
+      allow read: if true;
+      
+      // 🔒 WRITE: Only authenticated users (or admins) can modify courses
+      allow create, update, delete: if request.auth != null;
+      
+      // Allow access to subcollections (modules, lessons)
+      match /{allChildren=**} {
+        allow read: if true;
+      }
+    }
+
+    // --- Users collection ---
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+    }
+
+    // --- Progress tracking ---
+    match /progress/{progressId} {
+      // 📖 READ: Check the EXISTING file (resource.data)
+      allow read: if isOwner(resource.data.userId);
+      
+      // 📝 CREATE: Check the INCOMING file (request.resource.data)
+      // This fixes the "Catch-22" bug where you couldn't create new progress
+      allow create: if isOwner(request.resource.data.userId);
+      
+      // ✏️ UPDATE: Check ownership of existing file
+      allow update: if isOwner(resource.data.userId);
+                    
+      allow delete: if isOwner(resource.data.userId);
+    }
+
+    // 🚑 EMERGENCY DEV MODE (Uncomment these 3 lines if you get stuck again)
+    // match /{document=**} {
+    //   allow read, write: if true;
+    // }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

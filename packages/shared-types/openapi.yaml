@@ -1,0 +1,41 @@
+openapi: 3.0.0
+info:
+  title: Cybacad API
+  version: 1.0.0
+paths: {}
+components:
+  schemas:
+    Module:
+      type: object
+      required:
+        - id
+        - title
+        - lessons
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        lessons:
+          type: array
+          items:
+            type: string
+        description:
+          type: string
+        instructor:
+          type: string
+    Lesson:
+      type: object
+      required:
+        - id
+        - title
+        - content
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        content:
+          type: string
+        durationMinutes:
+          type: number

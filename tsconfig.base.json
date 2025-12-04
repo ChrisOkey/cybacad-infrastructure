@@ -1,0 +1,35 @@
+{
+  "compilerOptions": {
+    // Basic Options
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+
+    // Strictness
+    "strict": true,
+    "noImplicitAny": true,
+
+    // Monorepo / Build Options
+    "composite": true,        // ✅ Critical for Monorepos
+    "declaration": true,      // ✅ Generates .d.ts files so packages can talk to each other
+    "declarationMap": true,
+    "sourceMap": true,
+
+    // Path Aliases
+    "baseUrl": ".",
+    "paths": {
+      // ❌ We REMOVED manual mappings here.
+      // We now rely on "pnpm" and "package.json" to link packages.
+      // This forces your code to use the built version of the UI library,
+      // which matches how it works in production.
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next"]
+}

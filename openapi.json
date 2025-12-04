@@ -1,0 +1,101 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Cybacad API",
+    "version": "1.0.0",
+    "description": "OpenAPI schema generated from Zod definitions for Cybacad backend."
+  },
+  "components": {
+    "schemas": {
+      "Course": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "instructor": {
+            "type": "string"
+          },
+          "progress": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "instructor"
+        ],
+        "description": "Course schema"
+      },
+      "Lesson": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "durationMinutes": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "content"
+        ],
+        "description": "Schema for a lesson object",
+        "example": {
+          "id": "lesson-001",
+          "title": "Introduction to Zod",
+          "content": "Learn how to define schemas with Zod.",
+          "durationMinutes": 45
+        }
+      },
+      "Module": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "lessons": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "lessons"
+        ],
+        "description": "Schema for a module containing lessons",
+        "example": {
+          "id": "module-001",
+          "title": "Getting Started with TypeScript",
+          "lessons": [
+            "lesson-001",
+            "lesson-002"
+          ],
+          "description": "Introductory module for TypeScript basics"
+        }
+      }
+    },
+    "parameters": {}
+  },
+  "paths": {}
+}

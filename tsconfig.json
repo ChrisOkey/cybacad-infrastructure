@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/shared-types" },
+    { "path": "./packages/progress-service" },
+    { "path": "./packages/rbac" },
+    { "path": "./packages/firestore-config" },
+    { "path": "./packages/ui" },
+    { "path": "./apps/dashboard" },
+    { "path": "./apps/backend-nodejs" },
+    { "path": "./apps/cybacad-frontend" }
+  ]
+}
