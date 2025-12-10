@@ -1,31 +1,14 @@
-// src/app/(protected)/dashboard/layout.tsx
-"use client";
-
-import Link from "next/link";
+import Sidebar from "@/components/layout/Sidebar";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div style={{ display: "flex", minHeight: "100vh" }}>
-      {/* Sidebar */}
-      <aside
-        style={{
-          width: "240px",
-          background: "#f9f9f9",
-          borderRight: "1px solid #ddd",
-          padding: "1rem",
-        }}
-      >
-        <h2 style={{ marginBottom: "1rem" }}>My Learning</h2>
-        <nav style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          <Link href="/dashboard">🏠 Dashboard</Link>
-          <Link href="/dashboard/courses">📚 Courses</Link>
-          <Link href="/dashboard/progress">📈 Progress</Link>
-          <Link href="/dashboard/settings">⚙️ Settings</Link>
-        </nav>
-      </aside>
+    <div className="min-h-screen bg-gray-950 flex">
+      {/* Left Sidebar */}
+      <Sidebar />
 
-      {/* Main content */}
-      <main style={{ flex: 1, padding: "2rem" }}>
+      {/* Main Content Area */}
+      {/* We add ml-64 to push content to the right of the fixed sidebar */}
+      <main className="flex-1 ml-64 p-8">
         {children}
       </main>
     </div>

@@ -1,6 +1,5 @@
-// packages/shared-types/src/module.ts
-import { z } from "./setup";
-import { LessonSchema } from "./lesson"; // Import Lesson
+import { z } from "./zod/setup";
+import { LessonSchema } from "./lesson"; // We import Lesson so we can nest them
 
 /**
  * Zod schema for Module
@@ -12,16 +11,15 @@ export const ModuleSchema = z.object({
   description: z.string().openapi({ description: "Module description" }).optional(),
   order: z.number().openapi({ description: "Ordering index within the course" }).optional(),
   
-  // ✅ Allow nested lessons (Optional, useful for API responses)
-  lessons: z.array(LessonSchema).optional().openapi({ description: "List of lessons in this module" }),
+  // ✅ Allow nested lessons (Critical for the frontend to fetch everything in one go)
+  lessons: z.array(LessonSchema).optional().openapi({ description: "List of lessons" }),
 }).openapi({
-  description: "Schema for a course module object",
+  description: "Schema for a course module",
   example: {
-    id: "module_001",
+    id: "module_01",
     title: "Injection Attacks",
     courseId: "CYBER-101",
-    order: 1,
-    lessons: [] // Can be populated or empty
+    lessons: []
   },
 });
 
