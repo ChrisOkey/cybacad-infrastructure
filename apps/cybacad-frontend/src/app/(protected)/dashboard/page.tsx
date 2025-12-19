@@ -1,137 +1,85 @@
-"use client";
+"use client"; // 👈 CRITICAL: This was likely missing
 
 import React from "react";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { useUserProgress } from "@/hooks/useUserProgress";
-import { Shield, Clock, Award, ArrowRight, PlayCircle } from "lucide-react";
+import { Play, Clock, Shield, Award } from "lucide-react";
 
-// --- HELPER COMPONENT: Google Style Circular Progress ---
-const CircularProgress = ({ percentage }: { percentage: number }) => {
-  const radius = 24;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
+export default function StudentDashboard() {
   return (
-    <div className="relative w-16 h-16 flex items-center justify-center">
-      {/* Background Circle */}
-      <svg className="transform -rotate-90 w-full h-full">
-        <circle
-          cx="32"
-          cy="32"
-          r={radius}
-          stroke="currentColor"
-          strokeWidth="6"
-          fill="transparent"
-          className="text-slate-800"
-        />
-        {/* Progress Ring (Blue) */}
-        <circle
-          cx="32"
-          cy="32"
-          r={radius}
-          stroke="currentColor"
-          strokeWidth="6"
-          fill="transparent"
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
-          strokeLinecap="round"
-          className="text-blue-500 transition-all duration-1000 ease-out"
-        />
-      </svg>
-      {/* Percentage Text */}
-      <span className="absolute text-xs font-bold text-slate-300">{percentage}%</span>
-    </div>
-  );
-};
-
-export default function DashboardHome() {
-  const { user } = useAuth();
-  const { completedLessons } = useUserProgress();
-
-  // Simple logic: If user has completed at least 1 lesson, show 25% progress for demo
-  const progressPercent = completedLessons.length > 0 ? 25 : 0;
-
-  return (
-    <div className="max-w-6xl mx-auto text-white">
+    <div className="max-w-7xl mx-auto text-white pb-20 pt-10 px-6">
       
-      {/* 1. WELCOME HEADER */}
-      <header className="mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">
-            Dashboard
-          </h1>
-          <p className="text-slate-400">
-            Welcome back, <span className="text-white font-semibold">{user?.displayName || "Analyst"}</span>. Track your certification progress.
-          </p>
-        </div>
-        
-        {/* Rank Badge */}
-        <div className="hidden md:block text-right">
-          <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Current Rank</p>
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm font-bold border border-blue-500/20">
-            <Shield className="w-4 h-4" /> Novice Analyst
-          </span>
-        </div>
-      </header>
-
-      {/* 2. STATS ROW */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {[
-          { label: "Lessons Completed", value: completedLessons.length, icon: Shield, color: "blue" },
-          { label: "Learning Hours", value: "1.5", icon: Clock, color: "emerald" },
-          { label: "Skill Badges", value: "0", icon: Award, color: "purple" },
-        ].map((stat) => (
-          <div key={stat.label} className="bg-slate-900 border border-slate-800 p-6 rounded-xl flex items-center gap-5 hover:border-slate-700 transition-colors">
-            <div className={`p-3 rounded-lg bg-${stat.color}-500/10 text-${stat.color}-500`}>
-              <stat.icon className="w-6 h-6" />
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-white leading-none mb-1">{stat.value}</div>
-              <div className="text-sm font-medium text-slate-500">{stat.label}</div>
-            </div>
-          </div>
-        ))}
+      {/* Welcome Header */}
+      <div className="mb-12">
+        <h1 className="text-3xl font-bold mb-2">Welcome back, Recruit.</h1>
+        <p className="text-slate-400">Your current rank: <span className="text-teal-400 font-bold">Script Kiddie</span></p>
       </div>
 
-      {/* 3. ACTIVE LEARNING PATHS */}
-      <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-        <PlayCircle className="w-5 h-5 text-blue-500" /> In Progress
-      </h2>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        
-        {/* CARD 1: Web Security (Active) */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex items-center justify-between group hover:border-blue-500/50 transition-all hover:shadow-lg hover:shadow-blue-900/10">
-          <div className="flex items-center gap-6">
-            <CircularProgress percentage={progressPercent} />
-            <div>
-              <div className="text-xs font-bold text-blue-400 uppercase tracking-wider mb-1">CYBER-101</div>
-              <h3 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">Web Security Fundamentals</h3>
-              <p className="text-sm text-slate-400">Module 1: Injection Attacks</p>
-            </div>
+      {/* Stats Row */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl flex items-center gap-4">
+          <div className="p-3 bg-teal-500/10 rounded-lg text-teal-400">
+            <Clock className="w-6 h-6" />
           </div>
-          <Link href="/learn/CYBER-101" className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:bg-blue-600 group-hover:text-white transition-all">
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+          <div>
+            <p className="text-slate-400 text-sm font-bold">Hours Hacked</p>
+            <h3 className="text-2xl font-bold text-white">4.5</h3>
+          </div>
         </div>
 
-        {/* CARD 2: Network Defense (Not Started) */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 flex items-center justify-between group hover:border-slate-700 transition-all opacity-75 hover:opacity-100">
-          <div className="flex items-center gap-6">
-            <CircularProgress percentage={0} />
-            <div>
-              <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">CYBER-102</div>
-              <h3 className="text-lg font-bold text-white mb-1">Network Defense Essentials</h3>
-              <p className="text-sm text-slate-400">Not Started</p>
-            </div>
+        <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl flex items-center gap-4">
+          <div className="p-3 bg-purple-500/10 rounded-lg text-purple-400">
+            <Shield className="w-6 h-6" />
           </div>
-          <Link href="/learn/CYBER-102" className="h-10 w-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-400 group-hover:text-white transition-all">
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+          <div>
+            <p className="text-slate-400 text-sm font-bold">Labs Completed</p>
+            <h3 className="text-2xl font-bold text-white">2</h3>
+          </div>
         </div>
 
+        <div className="bg-slate-900 border border-slate-800 p-6 rounded-xl flex items-center gap-4">
+          <div className="p-3 bg-yellow-500/10 rounded-lg text-yellow-400">
+            <Award className="w-6 h-6" />
+          </div>
+          <div>
+            <p className="text-slate-400 text-sm font-bold">Certificates</p>
+            <h3 className="text-2xl font-bold text-white">0</h3>
+          </div>
+        </div>
       </div>
+
+      {/* Continue Learning Section */}
+      <h2 className="text-xl font-bold text-white mb-6">Continue Learning</h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Placeholder for an active course */}
+        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 hover:border-teal-500/50 transition-all group">
+          <div className="flex justify-between items-start mb-4">
+            <div>
+              <span className="text-xs font-bold text-teal-400 uppercase tracking-wider">In Progress</span>
+              <h3 className="text-lg font-bold text-white mt-1">Python Keyloggers 101</h3>
+            </div>
+            <div className="h-10 w-10 bg-teal-500 rounded-full flex items-center justify-center text-black group-hover:scale-110 transition-transform">
+              <Play className="w-5 h-5 fill-current" />
+            </div>
+          </div>
+          
+          <div className="w-full bg-gray-800 h-2 rounded-full overflow-hidden mb-2">
+            <div className="bg-teal-500 h-full w-[45%]"></div>
+          </div>
+          <p className="text-xs text-slate-500 text-right">45% Complete</p>
+          
+          <Link href="/learn/python-keyloggers-101" className="absolute inset-0" />
+        </div>
+
+        {/* Empty State / Browse More */}
+        <Link href="/" className="bg-slate-900/50 border border-dashed border-slate-800 rounded-xl p-6 flex flex-col items-center justify-center text-slate-500 hover:text-white hover:border-slate-600 transition-all cursor-pointer">
+          <div className="h-12 w-12 bg-slate-800 rounded-full flex items-center justify-center mb-3">
+            <Play className="w-5 h-5 ml-1" />
+          </div>
+          <span className="font-bold">Browse Course Catalog</span>
+        </Link>
+      </div>
+
     </div>
   );
 }

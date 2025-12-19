@@ -1,100 +1,117 @@
-import express, { Router, Request, Response } from 'express';
+import { Router } from 'express';
+import * as admin from 'firebase-admin';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import dotenv from 'dotenv';
 
-const router: Router = express.Router();
+dotenv.config();
 
-// --- 1. COURSE GENERATOR (Admin) ---
-router.post('/generate-course', async (req: Request, res: Response) => {
-  const { topic } = req.body;
-  if (!topic) return res.status(400).json({ error: "Topic is required" });
+// Explicitly define the router type
+const router: Router = Router();
 
+// ❌ REMOVED from here to prevent "No App" error
+// const db = admin.firestore(); 
+
+// ==========================================
+// 1. INITIALIZE GEMINI (2.5 Pro)
+// ==========================================
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+// Using the stable 2.5 Pro model
+const model = genAI.getGenerativeModel({ model: "gemini-2.5-pro" });
+
+// ==========================================
+// 2. THE PROMPT
+// ==========================================
+const generateCoursePrompt = (topic: string) => `
+You are a Cyber Security Course Architect.
+Create a structured interactive coding course about: "${topic}".
+
+IMPORTANT: You must output ONLY valid JSON. No markdown, no text explanations.
+The JSON must strictly follow this structure:
+
+{
+  "id": "generate-a-kebab-case-slug-based-on-topic",
+  "title": "Course Title",
+  "description": "Short description",
+  "instructor": "AI Sentinel",
+  "thumbnail": "https://placehold.co/600x400/000000/00FF00?text=Cyber+Security",
+  "modules": [
+    {
+      "title": "Module 1: Fundamentals",
+      "order": 1,
+      "lessons": [
+        {
+          "id": "lesson_1",
+          "title": "Lesson Title",
+          "videoUrl": "https://www.youtube.com/watch?v=_jKylhJtPmI",
+          "content": "# Python Code for the Lab\\n# Write a script that demonstrates the concept...",
+          "timeline": [
+            {
+              "triggerTime": 5,
+              "action": "UPDATE_CODE",
+              "payload": "# Solution code..."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+
+Create 1 Module with 1 Lesson.
+The 'content' field must be valid Python code.
+`;
+
+// ==========================================
+// 3. THE ROUTE
+// ==========================================
+router.post('/generate', async (req, res) => {
   try {
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    // 🚨 MOCK MODE CHECK: If no key or placeholder, switch to Mock Mode
-    if (!apiKey || apiKey.includes("Paste_Your_New_Key")) {
-      console.log("⚠️ No valid API Key. Using MOCK AI response.");
-      return res.json({ outline: getMockCourse(topic) });
+    // 🟢 FIX: Connect to DB here, INSIDE the route
+    // This ensures Firebase is fully initialized before we try to use it
+    const db = admin.firestore();
+    
+    const { topic } = req.body;
+    
+    if (!topic) {
+       return res.status(400).json({ error: "Topic is required" });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    // Attempt to use Pro model, fall back to mock if it fails
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    console.log(`🤖 Generating Course for: "${topic}"...`);
 
-    const prompt = `
-      Create a structured cyber security course outline for: "${topic}".
-      Format the response exactly like this template (Markdown):
-      # Course Title
-      > A catchy 1-sentence description.
-      ## Module 1: [Title]
-      * Lesson 1.1: [Title] - [Brief Description]
-      * Lesson 1.2: [Title] - [Brief Description]
-    `;
-
-    const result = await model.generateContent(prompt);
+    const result = await model.generateContent(generateCoursePrompt(topic));
     const response = await result.response;
-    return res.json({ outline: response.text() });
+    let text = response.text();
+
+    // Clean Markdown
+    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+
+    let courseData;
+    try {
+      courseData = JSON.parse(text);
+    } catch (e) {
+      console.error("JSON Parse Error. AI Output:", text);
+      return res.status(500).json({ error: "AI returned invalid JSON." });
+    }
+
+    // Save to Firestore
+    if (courseData && courseData.id) {
+        console.log(`💾 Saving to Firestore: courses/${courseData.id}`);
+        await db.collection('courses').doc(courseData.id).set(courseData);
+        
+        res.json({ 
+            success: true, 
+            message: "Course Generated & Saved!",
+            courseId: courseData.id,
+            data: courseData 
+        });
+    } else {
+        res.status(500).json({ error: "Generated data was missing ID" });
+    }
 
   } catch (error: any) {
-    console.error("Real AI failed, switching to MOCK mode:", error.message);
-    
-    // ✅ FALLBACK: Return dummy data so the app doesn't crash
-    return res.json({ outline: getMockCourse(topic) });
+    console.error("❌ AI Route Error:", error);
+    res.status(500).json({ error: error.message || "Internal Server Error" });
   }
 });
-
-// --- 2. AI COACH (Student) ---
-router.post('/get-hint', async (req: Request, res: Response) => {
-  const { userCode, userError, lessonTitle } = req.body;
-
-  if (!userCode || !lessonTitle) {
-    return res.status(400).json({ error: "Missing required fields." });
-  }
-
-  // MOCK MODE FOR AI COACH TOO
-  const apiKey = process.env.GEMINI_API_KEY;
-  if (!apiKey || apiKey.includes("Paste_Your_New_Key")) {
-      return res.json({ hint: "Mock Hint: Check your SQL syntax near the 'WHERE' clause. (AI Disabled)" });
-  }
-
-  try {
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    const prompt = `
-        You are an expert Cybersecurity Coach. 
-        The student is working on: "${lessonTitle}". 
-        Provide a brief hint. Do NOT give the solution.
-        Code: ${userCode}
-        Error: ${userError || "N/A"}
-    `;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    
-    return res.json({ hint: response.text() });
-
-  } catch (error: any) {
-    console.error("AI Coach Error:", error);
-    // Fallback Mock Hint
-    return res.json({ hint: "Mock Hint: Ensure you are sanitizing inputs. (Real AI Failed)" });
-  }
-});
-
-// --- HELPER: The Fake AI Generator ---
-function getMockCourse(topic: string) {
-  return `
-# ${topic} (Mock Generated)
-> This is a placeholder course because the AI Key is invalid.
-
-## Module 1: Introduction to ${topic}
-* Lesson 1.1: Basics of ${topic} - Understanding the core concepts.
-* Lesson 1.2: Environment Setup - Installing necessary tools.
-
-## Module 2: Advanced Techniques
-* Lesson 2.1: Attack Vectors - Identifying common vulnerabilities.
-* Lesson 2.2: Mitigation Strategies - Securing the system.
-  `;
-}
 
 export default router;

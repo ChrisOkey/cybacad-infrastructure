@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-const router = Router();
+const router: Router = Router();
 
 // Example user routes
 router.get("/", (_req, res) => {

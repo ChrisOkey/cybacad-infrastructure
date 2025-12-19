@@ -1,11 +1,8 @@
 "use client";
 
 import React from "react";
-// ✅ IMPORT 1: Next.js tools
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-// ✅ IMPORT 2: Icons
 import { 
   LayoutDashboard, 
   BookOpen, 
@@ -16,25 +13,26 @@ import {
   Terminal,
   FolderDown, 
   CreditCard,
-  Lock
+  Lock,
+  Gift,     // ✅ NEW: For Free Courses
+  Diamond   // ✅ NEW: For Pro Courses
 } from "lucide-react";
-
-// ✅ IMPORT 3: Auth Hook
 import { useAuth } from "@/context/AuthContext";
-// ✅ IMPORT 4: Admin Hook
 import { useAdmin } from "@/hooks/useAdmin";
 
 export default function Sidebar() {
-  // ✅ DEFINE HOOKS
   const pathname = usePathname();
   const { logout } = useAuth();
   const { isAdmin } = useAdmin();
 
-  // ✅ DEFINE MENU ITEMS ARRAY
   const menuItems = [
     { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
     { name: "My Learning", href: "/dashboard/progress", icon: ShieldCheck },
-    { name: "Course Catalog", href: "/#courses", icon: BookOpen },
+    
+    // ✅ NEW SECTIONS
+    { name: "Free Courses", href: "/dashboard/catalog/free", icon: Gift },
+    { name: "Pro Certification", href: "/dashboard/catalog/pro", icon: Diamond },
+    
     { name: "Resources", href: "/dashboard/resources", icon: FolderDown },
     { name: "Billing & Plans", href: "/dashboard/billing", icon: CreditCard },
     { name: "My Profile", href: "/dashboard/profile", icon: User },
@@ -57,7 +55,7 @@ export default function Sidebar() {
       </div>
 
       {/* 2. MENU ITEMS */}
-      <div className="flex-1 py-6 px-3 space-y-1">
+      <div className="flex-1 py-6 px-3 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-800">
         <div className="text-[11px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">
           Platform
         </div>

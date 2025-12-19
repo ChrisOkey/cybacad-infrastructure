@@ -25,17 +25,18 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* LINKS 1 */}
+        {/* LINKS 1 - LEARN */}
         <div>
           <h4 className="font-bold text-white mb-4">Learn</h4>
           <ul className="space-y-2 text-sm text-gray-400">
-            <li><Link href="/learn/CYBER-101" className="hover:text-teal-400">Web Security</Link></li>
-            <li><Link href="#" className="hover:text-teal-400">Network Defense</Link></li>
-            <li><Link href="#" className="hover:text-teal-400">Python for Hackers</Link></li>
+            {/* ✅ FIXED: Point to the Catalog instead of a broken ID */}
+            <li><Link href="/" className="hover:text-teal-400">Web Security</Link></li>
+            <li><Link href="/" className="hover:text-teal-400">Network Defense</Link></li>
+            <li><Link href="/" className="hover:text-teal-400">Python for Hackers</Link></li>
           </ul>
         </div>
 
-        {/* LINKS 2 */}
+        {/* LINKS 2 - COMMUNITY */}
         <div>
           <h4 className="font-bold text-white mb-4">Community</h4>
           <ul className="space-y-2 text-sm text-gray-400">
@@ -45,7 +46,7 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* LINKS 3 */}
+        {/* LINKS 3 - COMPANY */}
         <div>
           <h4 className="font-bold text-white mb-4">Company</h4>
           <ul className="space-y-2 text-sm text-gray-400">

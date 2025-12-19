@@ -1,66 +1,93 @@
-import React, { useState, useRef } from 'react';
+"use client";
+
+import React, { useState, useRef, useEffect } from 'react';
 import VideoWindow from './VideoWindow';
 import CodeWindow from './CodeWindow';
-import { mockLesson } from './lessonMockData'; // Import our fake data
+import dynamic from 'next/dynamic';
 
-const ClassroomContainer = () => {
-  // 1. STATE MANAGEMENT
-  const [isPlaying, setIsPlaying] = useState(false); // Is video playing?
-  const [currentCode, setCurrentCode] = useState(mockLesson.initialCode); // What's in the editor?
-  const [isLocked, setIsLocked] = useState(true); // Can user type?
+// 1. Data Interfaces
+interface TimelineEvent {
+  triggerTime: number;
+  action: string;
+  payload: any;
+}
+
+interface LessonData {
+  title: string;
+  videoUrl: string;
+  initialCode: string;
+  timeline?: TimelineEvent[];
+}
+
+interface ClassroomProps {
+  data: LessonData;
+}
+
+// 2. Component
+const ClassroomContainer = ({ data }: ClassroomProps) => {
   
-  // Track processed events so we don't fire them twice
-  const processedEvents = useRef(new Set()); 
+  // STATE
+  const [isPlaying, setIsPlaying] = useState(false);
+  // Default to empty string if data is missing to prevent uncontrolled input errors
+  const [currentCode, setCurrentCode] = useState(data.initialCode || ""); 
+  const [isLocked, setIsLocked] = useState(true);
+  
+  // Sync state when new lesson data arrives
+  useEffect(() => {
+    setCurrentCode(data.initialCode || "");
+  }, [data]);
 
-  // 2. THE SYNC ENGINE (The Logic)
-  const handleTimeUpdate = (seconds) => {
-    // Round to nearest integer for simple matching
+  // SYNC ENGINE
+  const processedEvents = useRef(new Set<number>());
+
+  const handleTimeUpdate = (seconds: number) => {
+    if (!data.timeline) return;
+
     const currentSecond = Math.floor(seconds);
-
-    // Check if there is an event at this second
-    const event = mockLesson.timeline.find(e => e.triggerTime === currentSecond);
+    const event = data.timeline.find((e: TimelineEvent) => e.triggerTime === currentSecond);
 
     if (event && !processedEvents.current.has(currentSecond)) {
       console.log("Triggering Event:", event.action);
       
-      // Execute the Logic
       if (event.action === "UPDATE_CODE") {
         setCurrentCode(event.payload);
       } 
       else if (event.action === "PAUSE_CHALLENGE") {
-        setIsPlaying(false); // Stop Video
-        setIsLocked(false);  // Unlock Editor
-        alert("Teacher: " + event.payload); // Simple alert for now
+        setIsPlaying(false);
+        setIsLocked(false);
+        alert("Teacher: " + event.payload);
       }
 
-      // Mark as processed so it doesn't fire again in the same second
       processedEvents.current.add(currentSecond);
     }
   };
 
   return (
-    <div style={{ display: 'flex', gap: '20px', padding: '20px', background: '#000', color: '#fff' }}>
+    <div className="flex flex-col md:flex-row gap-5 p-5 bg-black text-white min-h-[500px]">
       
-      {/* LEFT COLUMN: VIDEO */}
-      <div style={{ flex: 1 }}>
-        <h2>📺 Module 1: Python Basics</h2>
+      {/* LEFT: VIDEO */}
+      <div className="flex-1">
+        <h2 className="text-xl font-bold mb-4 text-teal-400">📺 {data.title}</h2>
         <VideoWindow 
-          url={mockLesson.videoUrl}
+          url={data.videoUrl}
           isPlaying={isPlaying}
           onProgressReport={handleTimeUpdate}
         />
-        <button onClick={() => setIsPlaying(!isPlaying)} style={{ marginTop: '10px', padding: '10px' }}>
+        <button 
+          onClick={() => setIsPlaying(!isPlaying)} 
+          className="mt-3 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-white font-medium transition-colors"
+        >
           {isPlaying ? "Pause Video" : "Play Video"}
         </button>
       </div>
 
-      {/* RIGHT COLUMN: EDITOR */}
-      <div style={{ flex: 1 }}>
-        <h2>💻 Lab Environment</h2>
+      {/* RIGHT: EDITOR */}
+      <div className="flex-1">
+        <h2 className="text-xl font-bold mb-4 text-teal-400">💻 Lab Environment</h2>
         <CodeWindow 
           code={currentCode}
           isLocked={isLocked}
-          onUserType={(val) => setCurrentCode(val)}
+          onUserType={(val: string | undefined) => setCurrentCode(val || "")}
         />
       </div>
 

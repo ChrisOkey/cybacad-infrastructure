@@ -19,7 +19,7 @@ export function useAdmin() {
 
       // Quick Hardcode Check (Safest for MVP)
       // Replace this email with your actual login email!
-      const ADMIN_EMAILS = ["your-email@gmail.com"]; 
+      const ADMIN_EMAILS = ["chrisokem@googlemail.com"]; 
       
       if (ADMIN_EMAILS.includes(user.email || "")) {
         setIsAdmin(true);

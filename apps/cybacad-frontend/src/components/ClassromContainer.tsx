@@ -1,46 +1,59 @@
-import React, { useState, useRef } from 'react';
+"use client";
+
+import React, { useState, useRef, useEffect } from 'react';
 import VideoWindow from './VideoWindow';
 import CodeWindow from './CodeWindow';
-import { mockLesson } from './lessonMockData';
+import dynamic from 'next/dynamic';
 
-// Define the shape of our Event object for TypeScript
+// 1. Define Data Types
 interface TimelineEvent {
   triggerTime: number;
   action: string;
   payload: any;
 }
 
-const ClassroomContainer = () => {
-  // 1. STATE MANAGEMENT
+interface LessonData {
+  title: string;
+  videoUrl: string;
+  initialCode: string;
+  timeline?: TimelineEvent[];
+}
+
+interface ClassroomProps {
+  data: LessonData;
+}
+
+// 2. Component Definition
+const ClassroomContainer = ({ data }: ClassroomProps) => {
+  
+  // STATE
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentCode, setCurrentCode] = useState(mockLesson.initialCode);
+  const [currentCode, setCurrentCode] = useState(data.initialCode || "// No code provided");
   const [isLocked, setIsLocked] = useState(true);
   
-  // Track processed events so we don't fire them twice in the same second
-  const processedEvents = useRef(new Set<number>()); 
+  // Update code if data changes
+  useEffect(() => {
+    setCurrentCode(data.initialCode || "");
+  }, [data]);
 
-  // 2. THE SYNC ENGINE
-  // This function runs every ~0.5 seconds while video plays
+  // SYNC ENGINE
+  const processedEvents = useRef(new Set<number>());
+
   const handleTimeUpdate = (seconds: number) => {
+    if (!data.timeline) return;
+
     const currentSecond = Math.floor(seconds);
+    const event = data.timeline.find((e: TimelineEvent) => e.triggerTime === currentSecond);
 
-    // Find if there is an event scheduled for this exact second
-    const event = mockLesson.timeline.find((e: TimelineEvent) => e.triggerTime === currentSecond);
-
-    // If event exists AND we haven't run it yet...
     if (event && !processedEvents.current.has(currentSecond)) {
-      console.log("Triggering Event:", event.action);
-      
       if (event.action === "UPDATE_CODE") {
         setCurrentCode(event.payload);
       } 
       else if (event.action === "PAUSE_CHALLENGE") {
-        setIsPlaying(false); // Stop Video
-        setIsLocked(false);  // Unlock Editor for user
-        alert("Teacher: " + event.payload); // Simple alert
+        setIsPlaying(false);
+        setIsLocked(false);
+        alert("Teacher: " + event.payload);
       }
-
-      // Mark this second as "done" so it doesn't fire again
       processedEvents.current.add(currentSecond);
     }
   };
@@ -48,11 +61,11 @@ const ClassroomContainer = () => {
   return (
     <div className="flex flex-col md:flex-row gap-5 p-5 bg-black text-white min-h-[500px]">
       
-      {/* LEFT COLUMN: VIDEO */}
+      {/* VIDEO SECTION */}
       <div className="flex-1">
-        <h2 className="text-xl font-bold mb-4 text-teal-400">📺 Module 1: Python Basics</h2>
+        <h2 className="text-xl font-bold mb-4 text-teal-400">📺 {data.title}</h2>
         <VideoWindow 
-          url={mockLesson.videoUrl}
+          url={data.videoUrl}
           isPlaying={isPlaying}
           onProgressReport={handleTimeUpdate}
         />
@@ -64,7 +77,7 @@ const ClassroomContainer = () => {
         </button>
       </div>
 
-      {/* RIGHT COLUMN: EDITOR */}
+      {/* CODE EDITOR SECTION */}
       <div className="flex-1">
         <h2 className="text-xl font-bold mb-4 text-teal-400">💻 Lab Environment</h2>
         <CodeWindow 

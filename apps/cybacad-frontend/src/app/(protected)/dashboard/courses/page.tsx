@@ -1,12 +1,11 @@
 "use client";
-
 import React from "react";
+import Link from "next/link"; // ✅ Import Link
 import { useCourseData } from "@/hooks/useCourseData";
 import { CourseCard } from "@cybacad/ui";
 import { Loader2, AlertTriangle } from "lucide-react";
 
 export default function CoursesPage() {
-  // Fetch data from backend (or fallback mock)
   const { data: courses, loading, error } = useCourseData("http://localhost:5000/api/v1/courses");
 
   if (loading) {
@@ -36,12 +35,18 @@ export default function CoursesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {courses?.map((course, index) => (
-          <CourseCard
-            key={course.id || index}
-            title={course.title}
-            description={course.description || "No description available."}
-            progress={course.progress || 0}
-          />
+          // ✅ WRAP CARD IN LINK
+          <Link 
+            key={course.id || index} 
+            href={`/learn/${course.id}`} // This connects to the page with the Sidebar!
+            className="block hover:scale-[1.02] transition-transform duration-200"
+          >
+            <CourseCard
+              title={course.title}
+              description={course.description || "No description available."}
+              progress={course.progress || 0} 
+            />
+          </Link>
         ))}
       </div>
     </div>
